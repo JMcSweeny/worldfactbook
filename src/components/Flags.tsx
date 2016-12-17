@@ -94,6 +94,10 @@ export default class Flags extends React.Component<IFlagsProps, IFlagsState> {
 		return 4;
 	}
 
+	private autoCompleteFilter = (searchText: string, key: string): boolean => {
+		return key.toLowerCase().indexOf(searchText.toLowerCase()) != -1
+	}
+
 	public render() {
 		const gridCols = this.getGridCols();
 		const offset = this.props.isMobile ? 400 : 1000;
@@ -129,6 +133,7 @@ export default class Flags extends React.Component<IFlagsProps, IFlagsState> {
           <AutoComplete
 						hintText="Country Name"
 						dataSource={this.props.countries.map(c => c.name)}
+						filter={this.autoCompleteFilter}
 						onNewRequest={this.handleSearch}
 						floatingLabelText="Country Name"
 						fullWidth={true} />
