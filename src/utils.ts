@@ -16,6 +16,14 @@ export const findCountryByCode = (countries: ICountry[], code: string): ICountry
   }
 }
 
+export const getFlagImage = (country: ICountry): string => {
+  return `./dist/images/${country.code}.gif`;
+}
+
+export const getMapImage = (country: ICountry):string => {
+  return `./dist/images/${country.code}-map.gif`;
+}
+
 export const getKeys = (obj: Object): string[] => {
   let keys = [];
 

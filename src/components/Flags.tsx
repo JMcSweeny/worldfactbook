@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as LazyLoad from 'react-lazy-load';
 import styled, { keyframes } from 'styled-components';
 import ICountry from '../interfaces/ICountry';
-import { findCountryByName } from '../utils';
+import { findCountryByName, getFlagImage } from '../utils';
 import AppBar from 'material-ui/AppBar';
 import AutoComplete from 'material-ui/AutoComplete';
 import Avatar from 'material-ui/Avatar';
@@ -57,10 +57,6 @@ export default class Flags extends React.Component<IFlagsProps, IFlagsState> {
 			searchOpen: false
 		};
 	}
-
-	private getImageSrc = (country: ICountry): string => {
-		return `./dist/images/${country.code}.gif`;
-	}
 	
 	private onCountryClick = (country: ICountry): void => {
 		window.location.hash = country.code;
@@ -105,7 +101,7 @@ export default class Flags extends React.Component<IFlagsProps, IFlagsState> {
 		const flags = this.props.countries.map(country =>
 			<FadeLazyLoad height={200} offset={offset} key={country.code}>
 				<CountryGridTile title={country.name} onClick={() => this.onCountryClick(country)}>
-						<img src={this.getImageSrc(country)} />
+						<img src={getFlagImage(country)} />
 				</CountryGridTile>
 			</FadeLazyLoad>
 		);

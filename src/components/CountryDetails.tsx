@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import ICountry from '../interfaces/ICountry';
 import Topic from './Topic';
-import { getKeys } from '../utils';
+import { getFlagImage, getMapImage, getKeys } from '../utils';
 
 // Material UI
 import AppBar from 'material-ui/AppBar';
@@ -15,8 +15,31 @@ const DetailsDiv = styled.div`
 	padding: 1em;
 `;
 
+const MediaSection = styled.section`
+	width: 100%;
+	height: 250px;
+	display: flex;
+	align-items: center;
+
+	@media(max-width: 769px) {
+		height: 450px;
+		flex-direction: column;
+		justify-content: center;
+	}
+`;
+
 const FlagImg = styled.img`
 	height: 150px;
+`;
+
+const MapImage = styled.img`
+	height: 250px;
+	margin-left: 1em;
+
+	@media(max-width: 769px) {
+		margin-left: 0;
+		margin-top: 1em;
+	}
 `;
 
 const DetailsSection = styled.section`
@@ -91,8 +114,6 @@ export default class CountryDetails extends React.Component<ICountryDetailsProps
 			return <h1>Loading...</h1>;
 		}
 
-		let imageSrc = `./dist/images/${this.props.country.code}.gif`;
-
 		const DetailsSections = this.getDetailsSections();
 
 		return (
@@ -103,7 +124,10 @@ export default class CountryDetails extends React.Component<ICountryDetailsProps
 					title={this.props.country.name}
 					zDepth={2} />
 				<DetailsDiv>
-					<FlagImg src={imageSrc} />
+					<MediaSection>
+						<FlagImg src={getFlagImage(this.props.country)} />
+						<MapImage src={getMapImage(this.props.country)} />
+					</MediaSection>
 					{DetailsSections}
 				</DetailsDiv>
 			</div>
