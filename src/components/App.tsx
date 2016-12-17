@@ -1,43 +1,93 @@
 import * as React from 'react';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import styled from 'styled-components';
 import Flags from './Flags';
 import CountryDetails from './CountryDetails';
 import ICountry from '../interfaces/ICountry';
+import { findCountryByCode } from '../utils';
+
+// Material UI
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { grey100 } from 'material-ui/styles/colors';
+
+// Style
+const AppWrapper = styled.div`
+  background-color: ${grey100};
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+`;
 
 interface IAppState {
   route: string;
   countries: ICountry[];
+  isMobile: boolean;
+  isTablet: boolean
+}
+
+interface IMediaQuery {
+  mQL: MediaQueryList;
+  propName: string;
 }
 
 export default class App extends React.Component<{}, IAppState> {
+  private mediaQueries: IMediaQuery[];
+
 	constructor(props: any) {
 		super(props);
 
+    this.handleMediaChange = this.handleMediaChange.bind(this);
+    this.handleHashChange = this.handleHashChange.bind(this);
+
+		let mqlMobile = window.matchMedia('(max-width: 769px)');
+    let mqlTablet = window.matchMedia('(max-width: 1025px)');
+
+    this.mediaQueries = [
+      {
+        mQL: mqlMobile,
+        propName: 'isMobile'
+      },
+      {
+        mQL: mqlTablet,
+        propName: 'isTablet'
+      }
+    ];
+
 		this.state = {
       route: this.getRoute(),
-      countries: null
+      countries: null,
+      isMobile: mqlMobile.matches,
+      isTablet: mqlTablet.matches
     };
 	}
 
-  private getRouteComponent(route: string): JSX.Element {
-    if(route == '/') {
-      return <Flags countries={this.state.countries} />;
+	private handleMediaChange(mql) {
+    let newState = {...this.state};
+
+    for(let mediaQuery of this.mediaQueries) {
+      newState[mediaQuery.propName] = mediaQuery.mQL.matches;
     }
 
-    let country = this.findCountryByCode(this.state.route);
+		this.setState(newState);
+	}
+
+  private handleHashChange() {
+      this.setState({
+        ...this.state,
+        route: this.getRoute()
+      });
+  }
+
+  private getRouteComponent(route: string): JSX.Element {
+    if(route == '/') {
+      return <Flags {...this.state} />;
+    }
+
+    let country = findCountryByCode(this.state.countries, this.state.route);
 
     return <CountryDetails country={country} />;
   }
 
-  private findCountryByCode(code: string): ICountry {
-    for(let country of this.state.countries) {
-      if(country.code == code) {
-        return country;
-      }
-    }
-  }
+
 
   private getRoute() {
     let route = window.location.hash.substr(1);
@@ -76,14 +126,21 @@ export default class App extends React.Component<{}, IAppState> {
 	}
 
 	public componentDidMount() {
-		window.addEventListener('hashchange', () => {
-      this.setState({
-        ...this.state,
-        route: this.getRoute()
-      });
-    });
+		window.addEventListener('hashchange', this.handleHashChange);
+    
+    for(let mediaQuery of this.mediaQueries) {
+      mediaQuery.mQL.addListener(this.handleMediaChange);
+    }
 
     this.fetchData();
+	}
+
+	public componentWillUnmount() {
+    window.removeEventListener('hashchange', this.handleHashChange);
+
+		for(let mediaQuery of this.mediaQueries) {
+      mediaQuery.mQL.removeListener(this.handleMediaChange);
+    }
 	}
 
 	public render() {
@@ -94,8 +151,10 @@ export default class App extends React.Component<{}, IAppState> {
     const RouteComponent = this.getRouteComponent(this.state.route);
 
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-        {RouteComponent}
+      <MuiThemeProvider>
+        <AppWrapper>
+          {RouteComponent}
+        </AppWrapper>
       </MuiThemeProvider>
     );
 	}
