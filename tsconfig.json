@@ -1,15 +1,19 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "module": "commonjs",
-        "lib": ["dom", "es2015.promise", "es5"],
-        "jsx": "react"
-    },
-    "include": [
-        "src/**/*"
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "module": "commonjs",
+    "lib": [
+      "dom",
+      "es2015.promise",
+      "es5"
     ],
-    "exclude": [
-        "node_modules"
-    ]
+    "jsx": "react"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

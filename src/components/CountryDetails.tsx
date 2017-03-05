@@ -47,90 +47,90 @@ const DetailsSection = styled.section`
 `;
 
 interface ICountryDetailsProps {
-	country: ICountry;
+  country: ICountry;
 }
 
 interface ICountryDetailsState {
-	details: any;
+  details: any;
 }
 
 export default class CountryDetails extends React.Component<ICountryDetailsProps, ICountryDetailsState> {
-	constructor(props: any) {
-		super(props);
+  constructor(props: any) {
+    super(props);
 
-		this.state = { 
-			details: null 
-		};
-	}
+    this.state = {
+      details: null
+    };
+  }
 
-	private async fetchData(): Promise<void> {
-		const response = await fetch(`./dist/data/${this.props.country.code}.json`);
-		const details = await response.json();
+  private async fetchData(): Promise<void> {
+    const response = await fetch(`./dist/data/${this.props.country.code}.json`);
+    const details = await response.json();
 
-		this.setState({
-			details
-		});
-	}
+    this.setState({
+      details
+    });
+  }
 
-	private onBack = () => {
-		window.location.hash = '';
-	}
+  private onBack = () => {
+    window.location.hash = '';
+  }
 
-	private getTopics = (detailName: string) => {
-		return getKeys(this.state.details[detailName]).map(topicName => {
-			return <Topic 
-							key={topicName} 
-							name={topicName} 
-							data={this.state.details[detailName][topicName]} />;
-		});
-	}
+  private getTopics = (detailName: string) => {
+    return getKeys(this.state.details[detailName]).map(topicName => {
+      return <Topic
+        key={topicName}
+        name={topicName}
+        data={this.state.details[detailName][topicName]} />;
+    });
+  }
 
-	private getDetailsSections() {
-		return getKeys(this.state.details).map((detailName, index) => {
-			const Topics = this.getTopics(detailName);
-		
-			return (
-				<DetailsSection key={detailName}>
-					<Card initiallyExpanded={index == 0}>
-						<CardHeader
-							title={detailName}
-							actAsExpander={true}
-							showExpandableButton={true} />
-						<CardText expandable={true}>
-							{Topics}
-						</CardText>
-					</Card>
-			  </DetailsSection>
-			)
-		});
-	}
+  private getDetailsSections() {
+    return getKeys(this.state.details).map((detailName, index) => {
+      const Topics = this.getTopics(detailName);
 
-	public componentDidMount() {
-		this.fetchData();
-	}
+      return (
+        <DetailsSection key={detailName}>
+          <Card initiallyExpanded={index == 0}>
+            <CardHeader
+              title={detailName}
+              actAsExpander={true}
+              showExpandableButton={true} />
+            <CardText expandable={true}>
+              {Topics}
+            </CardText>
+          </Card>
+        </DetailsSection>
+      )
+    });
+  }
 
-	public render() {
-		if(!this.state.details) {
-			return <h1>Loading...</h1>;
-		}
+  public componentDidMount() {
+    this.fetchData();
+  }
 
-		const DetailsSections = this.getDetailsSections();
+  public render() {
+    if (!this.state.details) {
+      return <h1>Loading...</h1>;
+    }
 
-		return (
-			<div>
-				<AppBar
-					onLeftIconButtonTouchTap={this.onBack}
-					iconElementLeft={<IconButton><ArrowBack /></IconButton>}
-					title={this.props.country.name}
-					zDepth={2} />
-				<DetailsDiv>
-					<MediaSection>
-						<FlagImg src={getFlagImage(this.props.country)} />
-						<MapImage src={getMapImage(this.props.country)} />
-					</MediaSection>
-					{DetailsSections}
-				</DetailsDiv>
-			</div>
-		);
-	}
+    const DetailsSections = this.getDetailsSections();
+
+    return (
+      <div>
+        <AppBar
+          onLeftIconButtonTouchTap={this.onBack}
+          iconElementLeft={<IconButton><ArrowBack /></IconButton>}
+          title={this.props.country.name}
+          zDepth={2} />
+        <DetailsDiv>
+          <MediaSection>
+            <FlagImg src={getFlagImage(this.props.country)} />
+            <MapImage src={getMapImage(this.props.country)} />
+          </MediaSection>
+          {DetailsSections}
+        </DetailsDiv>
+      </div>
+    );
+  }
 }

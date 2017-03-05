@@ -1,6 +1,6 @@
 #World Factbook
 
-European football tables and fixtures built with Typescript.
+World Factbook built with Typescript.
 Uses https://github.com/opendatajson/factbook.json and https://www.cia.gov/library/publications/the-world-factbook/ as a source for data.
 
 http://worldfactbook.jamesmcsweeny.com

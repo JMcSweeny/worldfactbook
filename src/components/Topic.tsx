@@ -27,7 +27,7 @@ export default class Topic extends React.Component<ITopicProps, {}> {
   }
 
   private getContent() {
-    if(this.props.data.text) {
+    if (this.props.data.text) {
       return <ContentWrapper>{this.props.data.text}</ContentWrapper>
     }
 

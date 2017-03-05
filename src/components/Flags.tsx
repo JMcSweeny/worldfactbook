@@ -28,117 +28,117 @@ const fadeIn = keyframes`
   }
 `;
 
-const FadeLazyLoad = styled(LazyLoad)`
+const FadeLazyLoad = styled(LazyLoad) `
 	* {
 		animation: ${fadeIn} .5s ease-in;
 	}
 `;
 
-const CountryGridTile = styled(GridTile)`
+const CountryGridTile = styled(GridTile) `
 	cursor: pointer;
 `;
 
 // Component
 interface IFlagsState {
-	searchOpen: boolean;
+  searchOpen: boolean;
 }
 
 interface IFlagsProps {
-	isMobile: boolean;
-	isTablet: boolean;
-	countries: ICountry[];
+  isMobile: boolean;
+  isTablet: boolean;
+  countries: ICountry[];
 }
 
 export default class Flags extends React.Component<IFlagsProps, IFlagsState> {
-	constructor(props: any) {
-		super(props);
+  constructor(props: any) {
+    super(props);
 
-		this.state = {
-			searchOpen: false
-		};
-	}
-	
-	private onCountryClick = (country: ICountry): void => {
-		window.location.hash = country.code;
-	}
-	
-	private handleSearch = value => {
-		let country = findCountryByName(this.props.countries, value);
+    this.state = {
+      searchOpen: false
+    };
+  }
 
-		if(country != null) {
-			this.onCountryClick(country);
-		}
-	}
+  private onCountryClick = (country: ICountry): void => {
+    window.location.hash = country.code;
+  }
 
-	private handleSearchClose = () => {
-		this.setState({
-			searchOpen: false
-		});
-	}
+  private handleSearch = value => {
+    let country = findCountryByName(this.props.countries, value);
 
-	private handleSearchOpen = () => {
-		this.setState({
-			searchOpen: true
-		});
-	}
+    if (country != null) {
+      this.onCountryClick(country);
+    }
+  }
 
-	private getGridCols = () => {
-		if(this.props.isMobile) {
-			return 1;
-		}
+  private handleSearchClose = () => {
+    this.setState({
+      searchOpen: false
+    });
+  }
 
-		if(this.props.isTablet) {
-			return 2;
-		}
+  private handleSearchOpen = () => {
+    this.setState({
+      searchOpen: true
+    });
+  }
 
-		return 4;
-	}
+  private getGridCols = () => {
+    if (this.props.isMobile) {
+      return 1;
+    }
 
-	private autoCompleteFilter = (searchText: string, key: string): boolean => {
-		return key.toLowerCase().indexOf(searchText.toLowerCase()) != -1
-	}
+    if (this.props.isTablet) {
+      return 2;
+    }
 
-	public render() {
-		const gridCols = this.getGridCols();
-		const offset = this.props.isMobile ? 400 : 1000;
+    return 4;
+  }
 
-		const flags = this.props.countries.map(country =>
-			<FadeLazyLoad height={200} offset={offset} key={country.code}>
-				<CountryGridTile title={country.name} onClick={() => this.onCountryClick(country)}>
-						<img src={getFlagImage(country)} />
-				</CountryGridTile>
-			</FadeLazyLoad>
-		);
-	
-		return (
-			<div>
-				<AppBar
-					style={{position:'fixed'}}
-					title="World Factbook"
-					zDepth={2}
-					showMenuIconButton={false}
-					iconElementRight={<IconButton><SearchIcon /></IconButton>}
-					onRightIconButtonTouchTap={this.handleSearchOpen} />
-				<FlagsDiv>
-					<GridList cellHeight={200} cols={gridCols} padding={0}>
-						{flags}
-					</GridList>
-				</FlagsDiv>
-				<Dialog
+  private autoCompleteFilter = (searchText: string, key: string): boolean => {
+    return key.toLowerCase().indexOf(searchText.toLowerCase()) != -1
+  }
+
+  public render() {
+    const gridCols = this.getGridCols();
+    const offset = this.props.isMobile ? 400 : 1000;
+
+    const flags = this.props.countries.map(country =>
+      <FadeLazyLoad height={200} offset={offset} key={country.code}>
+        <CountryGridTile title={country.name} onClick={() => this.onCountryClick(country)}>
+          <img src={getFlagImage(country)} />
+        </CountryGridTile>
+      </FadeLazyLoad>
+    );
+
+    return (
+      <div>
+        <AppBar
+          style={{ position: 'fixed' }}
+          title="World Factbook"
+          zDepth={2}
+          showMenuIconButton={false}
+          iconElementRight={<IconButton><SearchIcon /></IconButton>}
+          onRightIconButtonTouchTap={this.handleSearchOpen} />
+        <FlagsDiv>
+          <GridList cellHeight={200} cols={gridCols} padding={0}>
+            {flags}
+          </GridList>
+        </FlagsDiv>
+        <Dialog
           title="Search Countries"
           actions={[<FlatButton label="Cancel" onTouchTap={this.handleSearchClose} />]}
           modal={false}
           open={this.state.searchOpen}
           onRequestClose={this.handleSearchClose} >
           <AutoComplete
-						hintText="Country Name"
-						dataSource={this.props.countries.map(c => c.name)}
-						filter={this.autoCompleteFilter}
-						onNewRequest={this.handleSearch}
-						floatingLabelText="Country Name"
-						fullWidth={true} />
+            hintText="Country Name"
+            dataSource={this.props.countries.map(c => c.name)}
+            filter={this.autoCompleteFilter}
+            onNewRequest={this.handleSearch}
+            floatingLabelText="Country Name"
+            fullWidth={true} />
         </Dialog>
-			</div>
-		);
-	}
+      </div>
+    );
+  }
 }

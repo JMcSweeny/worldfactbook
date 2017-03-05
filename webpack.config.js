@@ -9,7 +9,7 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-        { from: 'static' }
+      { from: 'static' }
     ])
   ],
   devtool: 'source-map',

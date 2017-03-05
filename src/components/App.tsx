@@ -32,13 +32,13 @@ interface IMediaQuery {
 export default class App extends React.Component<{}, IAppState> {
   private mediaQueries: IMediaQuery[];
 
-	constructor(props: any) {
-		super(props);
+  constructor(props: any) {
+    super(props);
 
     this.handleMediaChange = this.handleMediaChange.bind(this);
     this.handleHashChange = this.handleHashChange.bind(this);
 
-		let mqlMobile = window.matchMedia('(max-width: 769px)');
+    let mqlMobile = window.matchMedia('(max-width: 769px)');
     let mqlTablet = window.matchMedia('(max-width: 1025px)');
 
     this.mediaQueries = [
@@ -52,33 +52,33 @@ export default class App extends React.Component<{}, IAppState> {
       }
     ];
 
-		this.state = {
+    this.state = {
       route: this.getRoute(),
       countries: null,
       isMobile: mqlMobile.matches,
       isTablet: mqlTablet.matches
     };
-	}
+  }
 
-	private handleMediaChange(mql) {
-    let newState = {...this.state};
+  private handleMediaChange(mql) {
+    let newState = { ...this.state };
 
-    for(let mediaQuery of this.mediaQueries) {
+    for (let mediaQuery of this.mediaQueries) {
       newState[mediaQuery.propName] = mediaQuery.mQL.matches;
     }
 
-		this.setState(newState);
-	}
+    this.setState(newState);
+  }
 
   private handleHashChange() {
-      this.setState({
-        ...this.state,
-        route: this.getRoute()
-      });
+    this.setState({
+      ...this.state,
+      route: this.getRoute()
+    });
   }
 
   private getRouteComponent(route: string): JSX.Element {
-    if(route == '/') {
+    if (route == '/') {
       return <Flags {...this.state} />;
     }
 
@@ -87,12 +87,10 @@ export default class App extends React.Component<{}, IAppState> {
     return <CountryDetails country={country} />;
   }
 
-
-
   private getRoute() {
     let route = window.location.hash.substr(1);
 
-    if(route == '') {
+    if (route == '') {
       return '/';
     }
 
@@ -100,51 +98,51 @@ export default class App extends React.Component<{}, IAppState> {
   }
 
   private async fetchData(): Promise<void> {
-		const response = await fetch('./dist/data/countries.json');
-		const countries = await response.json();
+    const response = await fetch('./dist/data/countries.json');
+    const countries = await response.json();
 
-		this.sortCountries(countries);
+    this.sortCountries(countries);
 
-		this.setState({ 
+    this.setState({
       ...this.state,
-      countries 
+      countries
     });
-	}
+  }
 
-	private sortCountries(countries: ICountry[]): void {
-		countries.sort((a: ICountry, b: ICountry) => {
-				if (a.name < b.name) {
-					return -1;
-				}
+  private sortCountries(countries: ICountry[]): void {
+    countries.sort((a: ICountry, b: ICountry) => {
+      if (a.name < b.name) {
+        return -1;
+      }
 
-				if (a.name > b.name) {
-					return 1;
-				}
+      if (a.name > b.name) {
+        return 1;
+      }
 
-				return 0;
-			});
-	}
+      return 0;
+    });
+  }
 
-	public componentDidMount() {
-		window.addEventListener('hashchange', this.handleHashChange);
-    
-    for(let mediaQuery of this.mediaQueries) {
+  public componentDidMount() {
+    window.addEventListener('hashchange', this.handleHashChange);
+
+    for (let mediaQuery of this.mediaQueries) {
       mediaQuery.mQL.addListener(this.handleMediaChange);
     }
 
     this.fetchData();
-	}
+  }
 
-	public componentWillUnmount() {
+  public componentWillUnmount() {
     window.removeEventListener('hashchange', this.handleHashChange);
 
-		for(let mediaQuery of this.mediaQueries) {
+    for (let mediaQuery of this.mediaQueries) {
       mediaQuery.mQL.removeListener(this.handleMediaChange);
     }
-	}
+  }
 
-	public render() {
-    if(!this.state.countries) {
+  public render() {
+    if (!this.state.countries) {
       return <div>Loading...</div>;
     }
 
@@ -157,5 +155,5 @@ export default class App extends React.Component<{}, IAppState> {
         </AppWrapper>
       </MuiThemeProvider>
     );
-	}
+  }
 }
